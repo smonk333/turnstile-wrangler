@@ -127,12 +127,16 @@ export default {
                 user_subject: formData.get("user_subject"),
                 user_message: formData.get("user_message"),
               },
+              accessToken: env.EMAILJS_PRIVATE_KEY
             }),
           }
         );
 
-        if (!emailJsResponse.ok)
+        if (!emailJsResponse.ok) {
+          const txt = await emailJsResponse.text();
+          console.error("EmailJS call failed!", txt);
           throw new Error("Email failed", { cause: emailJsResponse });
+        }
 
         return cors(
           request,
